@@ -30,4 +30,11 @@
   to {
     transform: rotate(360deg);
   }
+
+
+}
+input[type='radio'], label{
+  vertical-align: baseline;
+  padding: 10px;
+  margin: 10px;
 }
