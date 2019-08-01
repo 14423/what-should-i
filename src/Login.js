@@ -4,21 +4,38 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
+import WhatShouldI from './WhatShouldI';
 import Register from "./Register";
 class Login extends Component {
     constructor(props){
         super(props);
         this.state={
             username:'',
-            password:''
+            password:'',
+            isloggedOn:false
         }
     }
 
     handleClick(event){
 
+console.log(this.props.parentContext);
+        this.props.parentContext.state.isLogin=true;
+        this.props.parentContext.setState(state => ({
+           isLogin:true
+        }));
 
-
-
+        if(this.props.parentContext.state.isLogin){
+            var loginmessage;
+            var loginscreen=[];
+            loginscreen.push(<WhatShouldI parentContext={this}/>);
+            loginmessage = ""
+            this.props.parentContext.setState({
+                loginscreen:loginscreen,
+                loginmessage:loginmessage,
+              //  buttonLabel:"Login",
+                isLogin:true
+            })
+        }
 
 
         /*var apiBaseUrl = "http://localhost:4000/api/";
@@ -61,14 +78,39 @@ class Login extends Component {
 
 
 
-        var loginscreen=[];
-        loginscreen.push(<Register parentContext={this}/>);
-
 
 
     }
 
+    handleRegisterClick(event){
+        // console.log("event",event);
+        var loginmessage;
+        if(this.props.parentContext.state.isLogin){
+            var loginscreen=[];
+            loginscreen.push(<WhatShouldI parentContext={this}/>);
+            loginmessage = "";
+            this.props.parentContext.setState({
+                loginscreen:loginscreen,
+                loginmessage:loginmessage,
+                buttonLabel:"Login",
+                isLogin:true
+            })
+        }
+        else{
+            var loginscreen=[];
+            loginscreen.push(<Register parentContext={this}/>);
+            loginmessage = "Not Registered yet.Go to registration";
+            this.props.parentContext.setState({
+                loginscreen:loginscreen,
+                loginmessage:loginmessage,
+                buttonLabel:"Register",
+                isLogin:false
+            })
+        }
+    }
+
     render() {
+
         return (
             <div>
                 <MuiThemeProvider>
@@ -92,10 +134,32 @@ class Login extends Component {
                         <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
                     </div>
                 </MuiThemeProvider>
+
+                <div>
+                    {this.props.parentContext.state.loginmessage}
+                    <MuiThemeProvider>
+                        <div>
+                            <RaisedButton label={this.props.parentContext.state.buttonLabel} primary={true} style={style} onClick={(event) => this.handleRegisterClick(event)}/>
+                        </div>
+                    </MuiThemeProvider>
+                </div>
             </div>
+
         );
+
+
+    }
+
+    componentWillMount() {
+        if(this.state.isloggedOn===true)
+        {
+            console.log('logged in');
+        }
     }
 }
+
+
+
 const style = {
     margin: 15,
 };
