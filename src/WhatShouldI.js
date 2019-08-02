@@ -8,6 +8,8 @@ import SearchField from "react-search-field";
 import VoiceSearch from "react-instantsearch-dom/dist/es/components/VoiceSearch";
 import WhatShouldISearchResult from "./WhatShouldISearchResult";
 import Toolbar from "@material-ui/core/Toolbar";
+import Login from "./Login";
+import Loginscreen1 from "./Loginscreen1";
 
 
 const theme = createMuiTheme({
@@ -42,13 +44,14 @@ class WhatShouldI extends Component {
 
     }
 
-    logoutFunction() {
-        console.log('in logout', this.props.parentContext.state);
+    logoutFunction(event) {
+        console.log(this);
+        console.log('in logout', this.props.parentContext.props.parentContext);
         var loginmessage;
         var loginscreen = [];
-        loginscreen.push(<login/>);
+        loginscreen.push(<Loginscreen1/>);
         loginmessage = ""
-        this.props.parentContext.setState({
+        this.props.parentContext.props.parentContext.setState({
             loginscreen: loginscreen,
             loginmessage: loginmessage,
             //  buttonLabel:"Login",
@@ -114,7 +117,7 @@ class WhatShouldI extends Component {
 
                         <AppBar position="static" title="Welcome">
                             <Toolbar>
-                                <button><img src="logout.PNG" onClick={this.logoutFunction} height={20} width={20}/>
+                                <button><img src="logout.PNG" onClick={(event) => this.logoutFunction(event)} height={20} width={20}/>
                                 </button>
                             </Toolbar>
                         </AppBar>
