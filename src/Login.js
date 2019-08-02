@@ -24,6 +24,17 @@ console.log(this.props.parentContext);
            isLogin:true
         }));
 
+        let data = {
+            userName : this.state.username,
+            password : this.state.password
+        }
+
+        var a = axios.post('http://localhost:8071/whatshouldi/login', data)
+            .then(function (response) {
+                console.log('printing response')
+                console.log(response);
+            })
+
         if(this.props.parentContext.state.isLogin){
             var loginmessage;
             var loginscreen=[];
@@ -120,14 +131,14 @@ console.log(this.props.parentContext);
                         />
                         <TextField
                         //    hintText="Enter your Username"
-                            floatingLabelText="Username"
+                            hintText="Username"
                             onChange = {(event,newValue) => this.setState({username:newValue})}
                         />
                         <br/>
                         <TextField
                             type="password"
                          //   hintText="Enter your Password"
-                            floatingLabelText="Password"
+                            hintText="Password"
                             onChange = {(event,newValue) => this.setState({password:newValue})}
                         />
                         <br/>

@@ -52,11 +52,9 @@ class WhatShouldISearchResult extends Component {
                     </ul>
 
                     <div align="left">
-                        <button
-                            className="button icon-left"
-                            onClick={(event) => this.navigateBack(event)}>
-                            Back
-                        </button>
+
+                        <img src="back.PNG"  onClick={(event) => this.navigateBack(event)} height={40} width={40}/>
+
                     </div>
                 </MuiThemeProvider>
             </div>

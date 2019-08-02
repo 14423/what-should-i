@@ -7,8 +7,8 @@ import "./ReactTable.css";
 import SearchField from "react-search-field";
 import VoiceSearch from "react-instantsearch-dom/dist/es/components/VoiceSearch";
 import WhatShouldISearchResult from "./WhatShouldISearchResult";
-import Loginscreen1 from "./Loginscreen1";
-import Login from "./Login";
+import Toolbar from "@material-ui/core/Toolbar";
+
 
 const theme = createMuiTheme({
     overrides: {
@@ -32,7 +32,7 @@ class WhatShouldI extends Component {
     }
 
     componentDidMount() {
-
+        console.log('in mount', this.props.parentContext.state);
         var searchField = document.getElementsByClassName('react-search-field-input');
         for (var j = 0; j < searchField.length; j++) {
             searchField[j].style.height = '10px';
@@ -42,7 +42,19 @@ class WhatShouldI extends Component {
 
     }
 
-
+    logoutFunction() {
+        console.log('in logout', this.props.parentContext.state);
+        var loginmessage;
+        var loginscreen = [];
+        loginscreen.push(<login/>);
+        loginmessage = ""
+        this.props.parentContext.setState({
+            loginscreen: loginscreen,
+            loginmessage: loginmessage,
+            //  buttonLabel:"Login",
+            isLogin: true
+        })
+    }
 
     render() {
         const data = [{
@@ -58,13 +70,17 @@ class WhatShouldI extends Component {
                 name: 'Visit'
             },
             {
-                name: 'Do'
+                name: 'Watch'
+            }, {
+                name: 'listen'
             }
+
         ]
 
         const columns = [{
             Header: 'What Should I',
-            accessor: 'name' // String-based value accessors!
+            accessor: 'name', // String-based value accessors!
+            //show: false
         }]
 
 
@@ -73,17 +89,17 @@ class WhatShouldI extends Component {
                 onClick: e => {
 
                     console.log('It was in this row:', rowInfo.original.name)
-console.log(this.props.parentContext);
+                    console.log(this.props.parentContext);
                     var loginmessage;
-                    var loginscreen=[];
-                    var selectionMessage='What Should I '+rowInfo.original.name;
+                    var loginscreen = [];
+                    var selectionMessage = 'What Should I ' + rowInfo.original.name;
                     loginscreen.push(<WhatShouldISearchResult parentContext={this} selectionItem={selectionMessage}/>);
                     loginmessage = ""
                     this.props.parentContext.props.parentContext.setState({
-                        loginscreen:loginscreen,
-                        loginmessage:loginmessage,
+                        loginscreen: loginscreen,
+                        loginmessage: loginmessage,
                         //  buttonLabel:"Login",
-                        isLogin:true
+                        isLogin: true
                     })
                 }
             }
@@ -95,9 +111,13 @@ console.log(this.props.parentContext);
             <div>
                 <MuiThemeProvider>
                     <div>
-                        <AppBar
-                            title="Welcome"
-                        />
+
+                        <AppBar position="static" title="Welcome">
+                            <Toolbar>
+                                <button><img src="logout.PNG" onClick={this.logoutFunction} height={20} width={20}/>
+                                </button>
+                            </Toolbar>
+                        </AppBar>
 
 
                         <br/>
@@ -105,41 +125,50 @@ console.log(this.props.parentContext);
                         <ReactTable
                             data={data}
                             columns={columns}
-                            defaultPageSize={5}
+                            defaultPageSize={20}
                             className="-striped -highlight"
                             showPagination={false}
                             getTrProps={onRowClick}
+                            style={{
+                                height: "250px" // This will force the table body to overflow and scroll, since there is not enough room
+                            }}
                         />
 
                         <br/>
+
+
                         <br/>
 
                         <VoiceSearch
                             // Optional parameters
-                            searchAsYouSpeak={true}
+                            searchAsYouSpeak={false}
                             buttonTextComponent={React.Node}
                             statusComponent={React.Node}
                             translations={{
                                 buttonTitle: 'Voice Search',
                                 disabledButtonTitle: 'Voice Search Disabled',
                             }}
+
+
                         />
                         <br/>
-                       <SearchField
-                            placeholder="Search..."
-                            searchText={this.state.searchData}
-                        />
 
+
+                        <SearchField id='searchfieldVoice'
+                                     placeholder="Search..."
+                                     searchText={this.state.searchData}
+                                     classname="ais-SearchBox-input"
+                        />
 
 
                     </div>
 
                 </MuiThemeProvider>
             </div>
-        );
+    );
     }
 
 
-}
+    }
 
-export default WhatShouldI;
+    export default WhatShouldI;
