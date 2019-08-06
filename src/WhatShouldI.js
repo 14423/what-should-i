@@ -122,9 +122,9 @@ class WhatShouldI extends Component {
                             </Toolbar>
                         </AppBar>
 
+                        <br/>
+                        <br/>
 
-                        <br/>
-                        <br/>
                         <ReactTable
                             data={data}
                             columns={columns}

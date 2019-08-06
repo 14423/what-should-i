@@ -132,8 +132,9 @@ class WhatShouldISearchResult extends Component {
 
                     <ReactTags
                         inline={true}
+                        placeholder=""
                         tags={tags}
-                        autofocus={true}
+                        autofocus={false}
                         suggestions={suggestions}
                         handleDelete={this.handleDelete}
                         handleAddition={this.handleAddition}
