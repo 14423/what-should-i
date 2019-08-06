@@ -1,24 +1,93 @@
 import React, {Component} from 'react';
+import { WithContext as ReactTags } from 'react-tag-input';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import AppBar from "material-ui/AppBar";
-import Login from "./Login";
 import WhatShouldI from "./WhatShouldI";
 
+const KeyCodes = {
+    comma: 188,
+    enter: 13,
+};
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter];
 class WhatShouldISearchResult extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
 
-        }
+        };
+
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleAddition = this.handleAddition.bind(this);
+        this.handleDrag = this.handleDrag.bind(this);
     }
+
+    handleDelete(i) {
+        const { tags } = this.state;
+        this.setState({
+            tags: tags.filter((tag, index) => index !== i),
+        });
+    }
+
+    handleAddition(tag) {
+        this.setState(state => ({ tags: [...state.tags, tag] }));
+    }
+
+    handleClick(tag)
+    {
+        console.log('in tag click');
+        console.log(tag);
+
+    }
+    handleDrag(tag, currPos, newPos) {
+        const tags = [...this.state.tags];
+        const newTags = tags.slice();
+
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
+
+        // re-render
+        this.setState({ tags: newTags });
+    }
+
 
     componentDidMount() {
 
-        console.log('in select'+this.props.selectionItem)
+        console.log('in select' + this.props.selectionItem)
 
-    }
+        if (this.props.selectionItem === 'What Should I Eat') {
+            this.setState({
+                tags: [
+                    {id: "recently visited", text: "recently visited"},
+                    {id: "Popular", text: "Popular"},
+                    {id: 'Mexican cuisine', text: 'Mexican cuisine'},
+                    {id: 'Indian cuisine', text: 'Indian cuisine'},
+                    {id: 'Newly opened', text: 'Trending'},
+                    {id: 'Occasion', text: 'Costa Rica'},
+                    {id: 'Buffet', text: 'Buffet'},
 
+                ],
+                suggestions: [
+                    {id: 'Mediterranean', text: 'Mediterranean'}
+                ]
+            });
+        } else if (this.props.selectionItem === 'What Should I Read') {
+                this.setState({
+                    tags: [
+                        {id: "Technical", text: "Technical"},
+                        {id: "Documentary", text: "Documentary"},
+                        {id: 'Comics', text: 'Comics'},
+                        {id: 'Recently visited', text: 'Recently visited'},
+                        {id: 'Health', text: 'Health'},
+
+                    ],
+                    suggestions: [
+                        {id: 'Yoga', text: 'Yoga'}
+                    ]
+                });
+            }
+        }
     navigateBack(event) {
         console.log(this.props.parentContext);
         console.log(this.props.parentContext.props.parentContext.props.parentContext)
@@ -36,7 +105,18 @@ class WhatShouldISearchResult extends Component {
 
 
     render() {
+        const { tags, suggestions } = this.state;
         const searchResult=this.props.selectionItem;
+        const ulStyle = {
+            position:'relative',
+            "list-style": 'none',
+            "display": "inline-block",
+            padding :".25rem .75rem",
+            "margin" :"2px",
+            "border-radius": "3px"
+
+        }
+
         return(
             <div>
                 <MuiThemeProvider>
@@ -44,6 +124,19 @@ class WhatShouldISearchResult extends Component {
                         <AppBar
                             title={this.props.selectionItem}/>
                     </div>
+
+                    <ReactTags
+                        inline={true}
+                        tags={tags}
+                               autofocus={true}
+                               suggestions={suggestions}
+                               handleDelete={this.handleDelete}
+                               handleAddition={this.handleAddition}
+                               handleDrag={this.handleDrag}
+                               delimiters={delimiters}
+                               handleTagClick={this.handleClick}/>
+
+
                     <ul>
                         <li><a href="#">Buffalo Wild Wings</a>/>
                         </li>

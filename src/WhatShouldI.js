@@ -10,6 +10,8 @@ import WhatShouldISearchResult from "./WhatShouldISearchResult";
 import Toolbar from "@material-ui/core/Toolbar";
 import Login from "./Login";
 import Loginscreen1 from "./Loginscreen1";
+import SpeechRecognition from "react-speech-recognition";
+import Dictaphone from "./Dictaphone";
 
 
 const theme = createMuiTheme({
@@ -164,7 +166,13 @@ class WhatShouldI extends Component {
                         />
 
 
-                    </div>
+                        <br/>
+                        <br/>
+
+
+                        </div>
+
+
 
                 </MuiThemeProvider>
             </div>
