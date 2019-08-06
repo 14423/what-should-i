@@ -101,3 +101,31 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   background: #b7cfe0;
   cursor: pointer;
 }
+
+
+
+#searchResult  .ReactTable .rt-td {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 0 0px;
+  flex: 1 0 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 15px 5px;
+  overflow: hidden;
+  transition: .3s ease;
+  transition-property: width, min-width, padding, opacity;
+  line-height: 3.5;
+}
+
+#searchResult .ReactTable .rt-th {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 0 0px;
+  flex: 1 0 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 15px 5px;
+  overflow: hidden;
+  transition: .3s ease;
+  transition-property: width, min-width, padding, opacity;
+  line-height: 0;
+}

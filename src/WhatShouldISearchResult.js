@@ -4,6 +4,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import AppBar from "material-ui/AppBar";
 import WhatShouldI from "./WhatShouldI";
 import AdSense from 'react-adsense';
+import ReactTable from "react-table";
 const KeyCodes = {
     comma: 188,
     enter: 13,
@@ -110,6 +111,10 @@ class WhatShouldISearchResult extends Component {
 
 
     render() {
+        const divBoxStyle = {
+            "background-color": 'lightgrey',
+            "font-size": '20px'
+        }
         const {tags, suggestions} = this.state;
         const searchResult = this.props.selectionItem;
         const ulStyle = {
@@ -122,7 +127,28 @@ class WhatShouldISearchResult extends Component {
 
         }
 
+        const data = [{
+            name: 'Buffalo Wild Wings'
+
+        }, {
+            name: 'Yead House'
+        }
+
+        ]
+
+        const columns = [{
+            Header: this.props.selectionItem,
+            accessor: 'name', // String-based value accessors!
+            //show: false
+        }]
+        const tableStyle = {
+            border: "none",
+            boxShadow: "none",
+            "line-height": "3.5"
+        };
+
         return (
+
             <div>
                 <MuiThemeProvider>
                     <div>
@@ -131,6 +157,7 @@ class WhatShouldISearchResult extends Component {
                     </div>
 
                     <ReactTags
+
                         inline={true}
                         placeholder=""
                         tags={tags}
@@ -142,12 +169,21 @@ class WhatShouldISearchResult extends Component {
                         delimiters={delimiters}
                         handleTagClick={this.handleClick}/>
                     <div id="searchResult">
-                    <ul>
-                        <li><a href="#">Buffalo Wild Wings</a>/>
-                        </li>
-                        <li><a href="#">Yard House</a> />
-                        </li>
-                    </ul>
+                        <ReactTable id="searchResults"
+                            style={tableStyle}
+                            showHeader={false}
+                            data={data}
+                            columns={columns}
+                            defaultPageSize={20}
+                            className="-striped -highlight"
+                            showPagination={false}
+                            getTheadGroupProps ={() => { return { style: { display: "none" } }; }}
+                           // getTrProps={onRowClick}
+                            style={{
+                                height: "350px" // This will force the table body to overflow and scroll, since there is not enough room
+
+                            }}
+                        />
                     </div>
 
                     <div align="left">
