@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { WithContext as ReactTags } from 'react-tag-input';
+import {WithContext as ReactTags} from 'react-tag-input';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import AppBar from "material-ui/AppBar";
 import WhatShouldI from "./WhatShouldI";
@@ -10,13 +10,12 @@ const KeyCodes = {
 };
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
+
 class WhatShouldISearchResult extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-
-        };
+        this.state = {};
 
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddition = this.handleAddition.bind(this);
@@ -24,22 +23,22 @@ class WhatShouldISearchResult extends Component {
     }
 
     handleDelete(i) {
-        const { tags } = this.state;
+        const {tags} = this.state;
         this.setState({
             tags: tags.filter((tag, index) => index !== i),
         });
     }
 
     handleAddition(tag) {
-        this.setState(state => ({ tags: [...state.tags, tag] }));
+        this.setState(state => ({tags: [...state.tags, tag]}));
     }
 
-    handleClick(tag)
-    {
+    handleClick(tag) {
         console.log('in tag click');
         console.log(tag);
 
     }
+
     handleDrag(tag, currPos, newPos) {
         const tags = [...this.state.tags];
         const newTags = tags.slice();
@@ -48,12 +47,17 @@ class WhatShouldISearchResult extends Component {
         newTags.splice(newPos, 0, tag);
 
         // re-render
-        this.setState({ tags: newTags });
+        this.setState({tags: newTags});
     }
 
 
     componentDidMount() {
-
+        var ul = document.getElementById("searchResult");
+        var items = ul.getElementsByTagName("li");
+        for (var i = 0; i < items.length; ++i) {
+            // do something with items[i], which is a <li> element
+            console.log(items[i]);
+        }
         console.log('in select' + this.props.selectionItem)
 
         if (this.props.selectionItem === 'What Should I Eat') {
@@ -73,51 +77,52 @@ class WhatShouldISearchResult extends Component {
                 ]
             });
         } else if (this.props.selectionItem === 'What Should I Read') {
-                this.setState({
-                    tags: [
-                        {id: "Technical", text: "Technical"},
-                        {id: "Documentary", text: "Documentary"},
-                        {id: 'Comics', text: 'Comics'},
-                        {id: 'Recently visited', text: 'Recently visited'},
-                        {id: 'Health', text: 'Health'},
+            this.setState({
+                tags: [
+                    {id: "Technical", text: "Technical"},
+                    {id: "Documentary", text: "Documentary"},
+                    {id: 'Comics', text: 'Comics'},
+                    {id: 'Recently visited', text: 'Recently visited'},
+                    {id: 'Health', text: 'Health'},
 
-                    ],
-                    suggestions: [
-                        {id: 'Yoga', text: 'Yoga'}
-                    ]
-                });
-            }
+                ],
+                suggestions: [
+                    {id: 'Yoga', text: 'Yoga'}
+                ]
+            });
         }
+    }
+
     navigateBack(event) {
         console.log(this.props.parentContext);
         console.log(this.props.parentContext.props.parentContext.props.parentContext)
         var loginmessage;
-        var loginscreen=[];
+        var loginscreen = [];
         loginscreen.push(<WhatShouldI parentContext={this.props.parentContext.props.parentContext}/>);
         loginmessage = ""
         this.props.parentContext.props.parentContext.props.parentContext.setState({
-            loginscreen:loginscreen,
-            loginmessage:loginmessage,
+            loginscreen: loginscreen,
+            loginmessage: loginmessage,
             //  buttonLabel:"Login",
-            isLogin:true
+            isLogin: true
         })
     }
 
 
     render() {
-        const { tags, suggestions } = this.state;
-        const searchResult=this.props.selectionItem;
+        const {tags, suggestions} = this.state;
+        const searchResult = this.props.selectionItem;
         const ulStyle = {
-            position:'relative',
+            position: 'relative',
             "list-style": 'none',
             "display": "inline-block",
-            padding :".25rem .75rem",
-            "margin" :"2px",
+            padding: ".25rem .75rem",
+            "margin": "2px",
             "border-radius": "3px"
 
         }
 
-        return(
+        return (
             <div>
                 <MuiThemeProvider>
                     <div>
@@ -128,25 +133,25 @@ class WhatShouldISearchResult extends Component {
                     <ReactTags
                         inline={true}
                         tags={tags}
-                               autofocus={true}
-                               suggestions={suggestions}
-                               handleDelete={this.handleDelete}
-                               handleAddition={this.handleAddition}
-                               handleDrag={this.handleDrag}
-                               delimiters={delimiters}
-                               handleTagClick={this.handleClick}/>
-
-
+                        autofocus={true}
+                        suggestions={suggestions}
+                        handleDelete={this.handleDelete}
+                        handleAddition={this.handleAddition}
+                        handleDrag={this.handleDrag}
+                        delimiters={delimiters}
+                        handleTagClick={this.handleClick}/>
+                    <div id="searchResult">
                     <ul>
                         <li><a href="#">Buffalo Wild Wings</a>/>
                         </li>
                         <li><a href="#">Yard House</a> />
                         </li>
                     </ul>
+                    </div>
 
                     <div align="left">
 
-                        <img src="back.PNG"  onClick={(event) => this.navigateBack(event)} height={40} width={40}/>
+                        <img src="back.PNG" onClick={(event) => this.navigateBack(event)} height={40} width={40}/>
 
                     </div>
                 </MuiThemeProvider>
@@ -158,4 +163,4 @@ class WhatShouldISearchResult extends Component {
 
 }
 
-export  default WhatShouldISearchResult;
+export default WhatShouldISearchResult;
