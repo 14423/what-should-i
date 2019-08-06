@@ -3,7 +3,7 @@ import {WithContext as ReactTags} from 'react-tag-input';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import AppBar from "material-ui/AppBar";
 import WhatShouldI from "./WhatShouldI";
-
+import AdSense from 'react-adsense';
 const KeyCodes = {
     comma: 188,
     enter: 13,
@@ -155,7 +155,18 @@ class WhatShouldISearchResult extends Component {
                         <img src="back.PNG" onClick={(event) => this.navigateBack(event)} height={40} width={40}/>
 
                     </div>
+                    <AdSense.Google
+                        client='ca-pub-7292810486004926'
+                        slot='7806394673'
+                        style={{ display: 'block' }}
+                        format='auto'
+                        responsive='true'
+                        layoutKey='-gw-1+2a-9x+5c'
+                    />
                 </MuiThemeProvider>
+
+
+
             </div>
         );
 
