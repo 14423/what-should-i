@@ -10,6 +10,7 @@ import WhatShouldISearchResult from "./WhatShouldISearchResult";
 import Toolbar from "@material-ui/core/Toolbar";
 import Login from "./Login";
 import Loginscreen1 from "./Loginscreen1";
+import ReactDOM from 'react-dom';
 
 
 const theme = createMuiTheme({
@@ -25,15 +26,30 @@ const theme = createMuiTheme({
     },
 });
 
+
+
 class WhatShouldI extends Component {
-
-
+    data = [];
+    user_name='';
     constructor(props) {
         super(props);
         this.state = {}
     }
 
+    handleClick(event){
+        console.log("Eevent "+event);
+        var d = {name: event}
+        console.log("d->"+d);
+        this.data.unshift(d);
+        this.setState({state: this.state});
+    }
+
+    componentDidUpdate() {
+        console.log(document.getElementsByClassName('ais-VoiceSearch-status'));
+    }
+
     componentDidMount() {
+
         console.log('in mount', this.props.parentContext.state);
         var searchField = document.getElementsByClassName('react-search-field-input');
         for (var j = 0; j < searchField.length; j++) {
@@ -41,6 +57,30 @@ class WhatShouldI extends Component {
             searchField[j].style.width = '350px';
             searchField[j].style.color = '#0000ff';
         }
+        var username = this.props.parentContext.state.username;
+        this.user_name = username;
+        document.getElementsByTagName('h1')[0].innerText = "Welcome "+username;
+        document.getElementById('welcomebar').title = "Welcome "+username;
+        var url = "http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/users/" + username + "/frequency"
+        fetch(url)
+            .then(response => {
+                return response.json();
+            }).then(result => {
+            console.log("Result::"+result);
+            var resultData = Object.keys(result);
+            console.log("resultData::"+resultData);
+            var dataArray = [];
+
+            for(var t=0; t< resultData.length; t++ ){
+                var dataObject = {}
+                dataObject["name"]=resultData[t];
+                dataArray.push(dataObject);
+            }
+            console.log("dataArray"+JSON.stringify(dataArray))
+            this.data = dataArray;
+            this.setState({state: this.state});
+
+        });
 
     }
 
@@ -54,31 +94,11 @@ class WhatShouldI extends Component {
         this.props.parentContext.props.parentContext.setState({
             loginscreen: loginscreen,
             loginmessage: loginmessage,
-            //  buttonLabel:"Login",
             isLogin: true
         })
     }
 
     render() {
-        const data = [{
-            name: 'Eat'
-
-        }, {
-            name: 'Read'
-        },
-            {
-                name: 'Shop'
-            },
-            {
-                name: 'Visit'
-            },
-            {
-                name: 'Watch'
-            }, {
-                name: 'listen'
-            }
-
-        ]
 
         const columns = [{
             Header: 'What Should I',
@@ -115,7 +135,7 @@ class WhatShouldI extends Component {
                 <MuiThemeProvider>
                     <div>
 
-                        <AppBar position="static" title="Welcome">
+                        <AppBar position="static" title="Welcome" id="welcomebar">
                             <Toolbar>
                                 <button><img src="logout.PNG" onClick={(event) => this.logoutFunction(event)} height={20} width={20}/>
                                 </button>
@@ -126,7 +146,7 @@ class WhatShouldI extends Component {
                         <br/>
 
                         <ReactTable
-                            data={data}
+                            data={this.data}
                             columns={columns}
                             defaultPageSize={20}
                             className="-striped -highlight"
@@ -142,9 +162,17 @@ class WhatShouldI extends Component {
 
                         <br/>
 
+                        <SearchField id='searchFieldVoice'
+                                     placeholder="Search..."
+                                     searchText={this.state.searchData}
+                                     classname="ais-SearchBox-input"
+                                     onSearchClick={(event) => this.handleClick(event)}
+
+                        />
+
                         <VoiceSearch
                             // Optional parameters
-                            searchAsYouSpeak={false}
+                            searchAsYouSpeak={true}
                             buttonTextComponent={React.Node}
                             statusComponent={React.Node}
                             translations={{
@@ -156,28 +184,16 @@ class WhatShouldI extends Component {
                         />
                         <br/>
 
-
-                        <SearchField id='searchfieldVoice'
-                                     placeholder="Search..."
-                                     searchText={this.state.searchData}
-                                     classname="ais-SearchBox-input"
-                        />
-
-
-                        <br/>
-                        <br/>
-
-
-                        </div>
-
-
+                    </div>
 
                 </MuiThemeProvider>
             </div>
-    );
-    }
+        );
 
 
     }
 
-    export default WhatShouldI;
+}
+
+
+export default WhatShouldI;

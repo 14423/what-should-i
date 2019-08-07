@@ -5,6 +5,7 @@ import AppBar from "material-ui/AppBar";
 import WhatShouldI from "./WhatShouldI";
 import AdSense from 'react-adsense';
 import ReactTable from "react-table";
+import $ from "jquery";
 const KeyCodes = {
     comma: 188,
     enter: 13,
@@ -13,7 +14,8 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class WhatShouldISearchResult extends Component {
-
+    tags = [];
+    data = [];
     constructor(props) {
         super(props);
         this.state = {};
@@ -61,37 +63,41 @@ class WhatShouldISearchResult extends Component {
         }
         console.log('in select' + this.props.selectionItem)
 
-        if (this.props.selectionItem === 'What Should I Eat') {
-            this.setState({
-                tags: [
-                    {id: "recently visited", text: "recently visited"},
-                    {id: "Popular", text: "Popular"},
-                    {id: 'Mexican cuisine', text: 'Mexican cuisine'},
-                    {id: 'Indian cuisine', text: 'Indian cuisine'},
-                    {id: 'Newly opened', text: 'Trending'},
-                    {id: 'Occasion', text: 'Costa Rica'},
-                    {id: 'Buffet', text: 'Buffet'},
+        var action = this.props.selectionItem.split(" ")
+        var actionVerb = action[action.length-1];
+        var userName = this.props.parentContext.user_name;
+        $.ajax({
+            type: 'GET',
+            url: 'http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/'+userName+'/'+actionVerb+'/',
+            contentType: 'application/json',
+            success:function(data){
+                console.log(data);
 
-                ],
-                suggestions: [
-                    {id: 'Mediterranean', text: 'Mediterranean'}
-                ]
-            });
-        } else if (this.props.selectionItem === 'What Should I Read') {
-            this.setState({
-                tags: [
-                    {id: "Technical", text: "Technical"},
-                    {id: "Documentary", text: "Documentary"},
-                    {id: 'Comics', text: 'Comics'},
-                    {id: 'Recently visited', text: 'Recently visited'},
-                    {id: 'Health', text: 'Health'},
+                var resultsArray = [];
+                var tagsArray = [];
 
-                ],
-                suggestions: [
-                    {id: 'Yoga', text: 'Yoga'}
-                ]
-            });
-        }
+                for(var t=0; t< data.results.length; t++ ){
+                    var resultsObject = {}
+                    resultsObject["name"]=data.results[t];
+                    resultsArray.push(resultsObject);
+
+                    var tagsObject = {};
+                    tagsObject["id"]=data.tags[t];
+                    tagsObject["text"]=data.tags[t];
+                    tagsArray.push(tagsObject);
+
+                }
+                this.data = resultsArray;
+                this.tags = tagsArray;
+
+                this.setState({state: this.state});
+            }.bind(this),
+            error:function(){
+                console.log("error");
+                this.setState({emailError:'email doesn\'t exist',
+                    passwordError:'incorrect password'});
+            }.bind(this)
+        });
     }
 
     navigateBack(event) {
@@ -115,7 +121,7 @@ class WhatShouldISearchResult extends Component {
             "background-color": 'lightgrey',
             "font-size": '20px'
         }
-        const {tags, suggestions} = this.state;
+        const {suggestions} = this.state;
         const searchResult = this.props.selectionItem;
         const ulStyle = {
             position: 'relative',
@@ -126,15 +132,6 @@ class WhatShouldISearchResult extends Component {
             "border-radius": "3px"
 
         }
-
-        const data = [{
-            name: 'Buffalo Wild Wings'
-
-        }, {
-            name: 'Yead House'
-        }
-
-        ]
 
         const columns = [{
             Header: this.props.selectionItem,
@@ -160,7 +157,7 @@ class WhatShouldISearchResult extends Component {
 
                         inline={true}
                         placeholder=""
-                        tags={tags}
+                        tags={this.tags}
                         autofocus={false}
                         suggestions={suggestions}
                         handleDelete={this.handleDelete}
@@ -172,7 +169,7 @@ class WhatShouldISearchResult extends Component {
                         <ReactTable id="searchResults"
                             style={tableStyle}
                             showHeader={false}
-                            data={data}
+                            data={this.data}
                             columns={columns}
                             defaultPageSize={20}
                             className="-striped -highlight"
