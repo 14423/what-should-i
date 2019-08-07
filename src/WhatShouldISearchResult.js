@@ -26,20 +26,19 @@ class WhatShouldISearchResult extends Component {
     }
 
     handleDelete(i) {
-        const {tags} = this.state;
-        this.setState({
-            tags: tags.filter((tag, index) => index !== i),
-        });
+        var filteredItems = this.tags.filter(item => item.text!==this.tags[i].text);
+        this.tags = filteredItems;
+        this.setState({state: this.state});
     }
 
     handleAddition(tag) {
-        this.setState(state => ({tags: [...state.tags, tag]}));
+        this.tags.push(tag);
+        this.setState({state: this.state});
     }
 
     handleClick(tag) {
-        console.log('in tag click');
-        console.log(tag);
-
+        console.log(this.tags[tag].text);
+        
     }
 
     handleDrag(tag, currPos, newPos) {
