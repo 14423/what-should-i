@@ -64,39 +64,38 @@ class WhatShouldISearchResult extends Component {
         console.log('in select' + this.props.selectionItem)
 
         var action = this.props.selectionItem.split(" ")
-        var actionVerb = action[action.length-1];
+        var actionVerb = action[action.length - 1];
         var userName = this.props.parentContext.user_name;
-        $.ajax({
-            type: 'GET',
-            url: 'http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/'+userName+'/'+actionVerb+'/',
-            contentType: 'application/json',
-            success:function(data){
-                console.log(data);
+        var url = 'https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/' + userName + '/' + actionVerb;
 
-                var resultsArray = [];
-                var tagsArray = [];
+        fetch(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data);
 
-                for(var t=0; t< data.results.length; t++ ){
-                    var resultsObject = {}
-                    resultsObject["name"]=data.results[t];
-                    resultsArray.push(resultsObject);
+            var resultsArray = [];
+            var tagsArray = [];
 
-                    var tagsObject = {};
-                    tagsObject["id"]=data.tags[t];
-                    tagsObject["text"]=data.tags[t];
-                    tagsArray.push(tagsObject);
+            for (var t = 0; t < data.results.length; t++) {
+                var resultsObject = {}
+                resultsObject["name"] = data.results[t];
+                resultsArray.push(resultsObject);
 
-                }
-                this.data = resultsArray;
-                this.tags = tagsArray;
+                var tagsObject = {};
+                tagsObject["id"] = data.tags[t];
+                tagsObject["text"] = data.tags[t];
+                tagsArray.push(tagsObject);
 
-                this.setState({state: this.state});
-            }.bind(this),
-            error:function(){
-                console.log("error");
-                this.setState({emailError:'email doesn\'t exist',
-                    passwordError:'incorrect password'});
-            }.bind(this)
+            }
+            this.data = resultsArray;
+            this.tags = tagsArray;
+
+            this.setState({state: this.state});
         });
     }
 

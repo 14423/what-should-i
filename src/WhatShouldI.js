@@ -11,6 +11,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Login from "./Login";
 import Loginscreen1 from "./Loginscreen1";
 import ReactDOM from 'react-dom';
+import $ from "jquery";
 
 
 const theme = createMuiTheme({
@@ -61,8 +62,14 @@ class WhatShouldI extends Component {
         this.user_name = username;
         document.getElementsByTagName('h1')[0].innerText = "Welcome "+username;
         document.getElementById('welcomebar').title = "Welcome "+username;
-        var url = "http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/users/" + username + "/frequency"
-        fetch(url)
+        var url = "https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/users/" + username + "/frequency";
+        fetch(url,{
+            headers: {
+                'Content-Type': 'application/json',
+                "X-Requested-With": "XMLHttpRequest"
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        })
             .then(response => {
                 return response.json();
             }).then(result => {
