@@ -34,9 +34,12 @@ console.log(this.props.parentContext);
 
         $.ajax({
             type: 'POST',
-            url: 'http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/login',
+            url: 'https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/login',
             data: JSON.stringify(body),
             contentType: 'application/json',
+            // header: {'Access-Control-Allow-Origin':'*',
+            //  'Access-Control-Allow-Methods':'GER,PUT,POST,DELETE', 
+            //  'Access-Control-Allow-Headers':'Content-Type'},
             success:function(data){
                 if(data === true){
                     var loginmessage;
