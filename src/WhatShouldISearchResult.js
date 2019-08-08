@@ -15,7 +15,9 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class WhatShouldISearchResult extends Component {
     tags = [];
-    data = [];
+    data = []
+    user_name = '';
+    search_key = '';
     constructor(props) {
         super(props);
         this.state = {};
@@ -23,6 +25,7 @@ class WhatShouldISearchResult extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddition = this.handleAddition.bind(this);
         this.handleDrag = this.handleDrag.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleDelete(i) {
@@ -37,7 +40,34 @@ class WhatShouldISearchResult extends Component {
     }
 
     handleClick(tag) {
-        console.log(this.tags[tag].text);
+        var tag = this.tags[tag].text;
+        var url = 'https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/'
+            + this.user_name + '/' + this.search_key + '/' + tag;
+        fetch(url,{
+            headers: {
+                'Content-Type': 'application/json',
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                var resultsArray = [];
+                var tagsArray = [];
+
+                for (var t = 0; t < data.length; t++) {
+                    var resultsObject = {}
+                    resultsObject["name"] = data[t];
+                    resultsArray.push(resultsObject);
+                }
+                this.data = resultsArray;
+                var tagsObject = {};
+                tagsObject["id"] = tag;
+                tagsObject["text"] = tag;
+                tagsArray.push(tagsObject);
+                this.tags = tagsArray;
+                this.setState({state: this.state});
+        });
         
     }
 
@@ -63,9 +93,9 @@ class WhatShouldISearchResult extends Component {
         console.log('in select' + this.props.selectionItem)
 
         var action = this.props.selectionItem.split(" ")
-        var actionVerb = action[action.length - 1];
-        var userName = this.props.parentContext.user_name;
-        var url = 'https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/' + userName + '/' + actionVerb;
+        this.search_key = action[action.length - 1];
+        this.user_name = this.props.parentContext.user_name;
+        var url = 'https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/' + this.user_name + '/' + this.search_key;
 
         fetch(url, {
             headers: {

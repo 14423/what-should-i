@@ -67,7 +67,6 @@ class WhatShouldI extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 "X-Requested-With": "XMLHttpRequest"
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             }
         })
             .then(response => {
