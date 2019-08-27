@@ -15,7 +15,10 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class WhatShouldISearchResult extends Component {
     tags = [];
-    data = []
+    data = [];
+    tagsMap = [];
+    dataMap = [];
+
     user_name = '';
     search_key = '';
     constructor(props) {
@@ -31,6 +34,26 @@ class WhatShouldISearchResult extends Component {
     handleDelete(i) {
         var filteredItems = this.tags.filter(item => item.text!==this.tags[i].text);
         this.tags = filteredItems;
+
+        this.data = []
+        var resultsTemp = [];
+        var resultsArray = [];
+
+        for(var i=0;i<this.tags.length;i++) {
+            var key = this.tags[i].text;
+            var tagsList = this.tagsMap[key];
+            for (var j = 0; j < tagsList.length; j++) {
+                if (!resultsTemp.includes(tagsList[j])) {
+                    resultsTemp.push(tagsList[j]);
+                    var dataObject = {};
+                    dataObject["name"] = tagsList[j];
+                    resultsArray.push(dataObject);
+                }
+            }
+        }
+
+        this.data = resultsArray;
+
         this.setState({state: this.state});
     }
 
@@ -41,34 +64,23 @@ class WhatShouldISearchResult extends Component {
 
     handleClick(tag) {
         var tag = this.tags[tag].text;
-        var url = 'https://cors-anywhere.herokuapp.com/http://ec2-54-204-165-233.compute-1.amazonaws.com:8071/whatshouldi/results/'
-            + this.user_name + '/' + this.search_key + '/' + tag;
-        fetch(url,{
-            headers: {
-                'Content-Type': 'application/json',
-                "X-Requested-With": "XMLHttpRequest"
-            }
-        })
-            .then(response => {
-                return response.json();
-            }).then(data => {
-                var resultsArray = [];
-                var tagsArray = [];
 
-                for (var t = 0; t < data.length; t++) {
-                    var resultsObject = {}
-                    resultsObject["name"] = data[t];
-                    resultsArray.push(resultsObject);
-                }
-                this.data = resultsArray;
-                var tagsObject = {};
-                tagsObject["id"] = tag;
-                tagsObject["text"] = tag;
-                tagsArray.push(tagsObject);
-                this.tags = tagsArray;
-                this.setState({state: this.state});
-        });
-        
+        var resultsArray = [];
+        for (var t = 0; t < this.tagsMap[tag].length; t++) {
+            var resultsObject = {}
+            resultsObject["name"] = this.tagsMap[tag][t];
+            resultsArray.push(resultsObject);
+        }
+        this.data = resultsArray;
+
+        var tagsArray = [];
+        var tagsObject = {};
+        tagsObject["id"] = tag;
+        tagsObject["text"] = tag;
+        tagsArray.push(tagsObject);
+        this.tags = tagsArray;
+        this.setState({state: this.state});
+
     }
 
     handleDrag(tag, currPos, newPos) {
@@ -105,22 +117,33 @@ class WhatShouldISearchResult extends Component {
         }).then(response => {
             return response.json();
         }).then(data => {
-            console.log(data);
-
+            var tagsTemp = Object.keys(data);
+            var resultsTemp = [];
+            for(var key in data) {
+                var list = data[key];
+                for(var i=0;i<list.length;i++) {
+                    if(!resultsTemp.includes(list[i])) {
+                        resultsTemp.push(list[i]);
+                      }
+                }
+            }
+            this.tagsMap = data;
             var resultsArray = [];
             var tagsArray = [];
 
-            for (var t = 0; t < data.results.length; t++) {
-                var resultsObject = {}
-                resultsObject["name"] = data.results[t];
-                resultsArray.push(resultsObject);
-
+            for (var t = 0; t < tagsTemp.length; t++) {
                 var tagsObject = {};
-                tagsObject["id"] = data.tags[t];
-                tagsObject["text"] = data.tags[t];
+                tagsObject["id"] = tagsTemp[t];
+                tagsObject["text"] = tagsTemp[t];
                 tagsArray.push(tagsObject);
-
             }
+
+            for (var t = 0; t < resultsTemp.length; t++) {
+                var dataObject = {};
+                dataObject["name"] = resultsTemp[t]
+                resultsArray.push(dataObject);
+            }
+
             this.data = resultsArray;
             this.tags = tagsArray;
 
